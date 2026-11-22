@@ -33,8 +33,11 @@ Back in Render -> Environment: set `FRONTEND_URL` (`https://buildvendo.vercel.ap
 The first API start creates the packages and your Super Admin (the email and password you set in step 3). No demo store or test accounts are created on a real server.
 Sign in at `/login?scope=platform`. You can remove `SEED_ADMIN_PASSWORD` from Render afterwards. Then add your payment accounts in Super Admin -> Payments.
 
-## 7. Email (so invites and receipts are really sent)
-Set `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` and `MAIL_FROM` on Render (for example Gmail with an app password).
+## 7. Email (required on a real server)
+New stores must confirm their email, and in production the confirmation link is only sent by email (the on-screen "confirm" button exists only in development).
+Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and `MAIL_FROM` on Render. For Gmail: host `smtp.gmail.com`, port `587`,
+your Gmail address as user, and a 16-character **app password** (Google account -> Security -> 2-Step Verification -> App passwords).
+Render's free plan blocks the usual email ports, which is one more reason `render.yaml` uses the paid always-on Starter plan.
 
 ## 8. Your own domain
 Add the domain in Vercel (and `*.yourdomain.com` if stores should get subdomains). Then change `ROOT_DOMAIN` on both Vercel and Render.

@@ -6,7 +6,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: ./Dockerfile
-    plan: free            # free instances sleep when idle and have no disk; upgrade before real customers
+    plan: starter         # always on (about USD 7/month). The free plan sleeps when idle and blocks the usual email ports.
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
