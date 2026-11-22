@@ -11,8 +11,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DB_NAME
-        value: ecommerce_platform
+      - key: DB_NAME         # a clean database for the live site (your test data stays in ecommerce_platform)
+        value: buildvendo
       - key: PLATFORM_CURRENCY
         value: PKR
       - key: TRUST_PROXY_HOPS

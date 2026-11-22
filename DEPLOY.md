@@ -7,6 +7,8 @@ The website (`frontend/`) goes on **Vercel**. The API (`backend/`) is a normal N
 Push this repository. After that, every `git push` to `main` rebuilds the website and the API automatically.
 
 ## 2. Atlas: allow the API server
+The live site uses its own database called `buildvendo` (set in `render.yaml`) on the same cluster, so it starts clean: no test stores or test accounts, and your Super Admin is the one you choose below. Atlas creates the database automatically on first use.
+
 Atlas -> Network Access -> Add IP Address. Render's free plan has no fixed address, so add `0.0.0.0/0` (anywhere).
 The database is still protected by its password. A paid Render plan gives fixed addresses you can list instead.
 
