@@ -22,7 +22,7 @@ async function connect() {
   } else {
     mode = "atlas";
   }
-  client = new MongoClient(uri, { serverSelectionTimeoutMS: 15000 });
+  client = new MongoClient(uri, { serverSelectionTimeoutMS: 15000, maxPoolSize: Number(process.env.DB_POOL) || 10 });
   await client.connect();
   db = client.db(process.env.DB_NAME || "ecommerce_platform");
   await ensureIndexes(db);

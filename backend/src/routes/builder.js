@@ -7,6 +7,7 @@ const F = require("../lib/flags");
 const { scoped } = require("../lib/repo");
 const { audit, slugify, wrap, validate, httpError, rateLimit } = require("../lib/util");
 const { generateSpec } = require("../builder/generate");
+const { bg } = require("../lib/bg");
 
 const router = express.Router();
 router.use(A.authenticate("tenant"));
@@ -49,7 +50,7 @@ const reqSchema = z.object({ requirements: z.string().min(20, "Describe your sto
 router.post("/jobs", rateLimit({ windowMs: 60_000, max: 6, key: (r) => r.actor.id }), F.enforceLimit("aiCredits"), wrap(async (req, res) => {
   const b = validate(reqSchema, req.body);
   const r = await req.R.jobs.insertOne({ state: "queued", progress: 0, input: { requirements: b.requirements }, createdAt: new Date(), by: req.actor.email });
-  setImmediate(() => runJob(req.R, req.tenant, r.insertedId, { requirements: b.requirements }));
+  bg(runJob(req.R, req.tenant, r.insertedId, { requirements: b.requirements }));
   await audit(req, "builder.generate", String(r.insertedId));
   res.status(202).json({ jobId: r.insertedId });
 }));
@@ -60,7 +61,7 @@ router.post("/auto-start", F.enforceLimit("aiCredits"), wrap(async (req, res) =>
   if (!text || text.length < 20) return res.json({ none: true });
   await getDb().collection("tenants").updateOne({ slug: req.tenant.slug }, { $unset: { signupRequirements: "" } });
   const r = await req.R.jobs.insertOne({ state: "queued", progress: 0, input: { requirements: text }, createdAt: new Date(), by: req.actor.email });
-  setImmediate(() => runJob(req.R, req.tenant, r.insertedId, { requirements: text }));
+  bg(runJob(req.R, req.tenant, r.insertedId, { requirements: text }));
   await audit(req, "builder.generate", String(r.insertedId));
   res.status(202).json({ jobId: r.insertedId });
 }));
@@ -70,7 +71,7 @@ router.post("/revise", rateLimit({ windowMs: 60_000, max: 10, key: (r) => r.acto
   const first = await req.R.jobs.find({ "input.instruction": { $exists: false } }).sort({ createdAt: 1 }).limit(1).toArray();
   if (!first[0]) throw httpError(409, "Generate a first draft before requesting changes.");
   const r = await req.R.jobs.insertOne({ state: "queued", progress: 0, input: { requirements: first[0].input.requirements, instruction: b.message, section: b.section || null }, createdAt: new Date(), by: req.actor.email });
-  setImmediate(() => runJob(req.R, req.tenant, r.insertedId, { requirements: first[0].input.requirements, instruction: b.message, section: b.section }));
+  bg(runJob(req.R, req.tenant, r.insertedId, { requirements: first[0].input.requirements, instruction: b.message, section: b.section }));
   await audit(req, "builder.revise", String(r.insertedId));
   res.status(202).json({ jobId: r.insertedId });
 }));

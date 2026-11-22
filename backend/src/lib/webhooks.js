@@ -57,12 +57,12 @@ async function deliver(hook, event, data) {
 
 // Fire and forget: never slows down or breaks the request that caused the event.
 function emit(tenantId, event, data) {
-  setImmediate(async () => {
+  require("./bg").bg((async () => {
     try {
       const hooks = await getDb().collection("webhooks").find({ tenantId, active: true, events: event }).toArray();
-      for (const h of hooks) deliver(h, event, data).catch(() => {});
+      await Promise.all(hooks.map((h) => deliver(h, event, data).catch(() => {}))); // finish all deliveries inside the background task
     } catch { /* ignore */ }
-  });
+  })());
 }
 
 module.exports = { emit, deliver, checkUrl, sign, EVENTS };

@@ -185,7 +185,7 @@ router.post("/:slug/orders/proof", rateLimit({ windowMs: 60_000, max: 12 }), wra
   if (!o || !["manual", "gateway"].includes(o.payments[0].method)) throw httpError(404, "Order not found or already settled.");
   if (!b.reference.trim() && !b.image) throw httpError(400, "Please enter the transaction reference or attach a screenshot.");
   let imageKey = null;
-  if (b.image) imageKey = require("../lib/files").savePrivateImage(req.tenant.slug, b.image, 2 * 1024 * 1024);
+  if (b.image) imageKey = await require("../lib/files").savePrivateImage(req.tenant.slug, b.image, 2 * 1024 * 1024);
   const method = (req.tenant.paymentConfig?.manual?.methods || []).find((m) => m.id === b.methodId);
   await req.R.orders.updateOne({ _id: o._id }, { $set: { "payments.0.status": "submitted", "payments.0.rejectReason": null, "payments.0.proof": { reference: b.reference.trim(), imageKey, methodId: b.methodId || null, methodLabel: method ? method.label : "", submittedAt: new Date(), status: "submitted" } },
     $push: { timeline: { at: new Date(), status: "pending", note: "Customer sent payment proof" } } });

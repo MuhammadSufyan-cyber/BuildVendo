@@ -71,7 +71,7 @@ Stripe is optional and switched off unless you add keys. The built-in way to tak
 
 ## Put it online
 
-Step by step (GitHub, Render for the API, Vercel for the website): see **DEPLOY.md**.
+Step by step, all free (GitHub, two Vercel projects, MongoDB Atlas): see **DEPLOY.md**.
 
 ## Not built yet
 

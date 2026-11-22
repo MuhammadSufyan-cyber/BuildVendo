@@ -38,7 +38,7 @@ function Editor({ post, onClose, onSaved }) {
   async function pick(e) {
     const file = e.target.files[0]; e.target.value = "";
     if (!file) return;
-    try { const data = await readImage(file, 3); const r = await api("/admin/uploads", { method: "POST", body: { data } }); setF((x) => ({ ...x, image: r.url })); } catch (er) { notify(er.message, "err"); }
+    try { const data = await readImage(file, 2.5); const r = await api("/admin/uploads", { method: "POST", body: { data } }); setF((x) => ({ ...x, image: r.url })); } catch (er) { notify(er.message, "err"); }
   }
   async function save(e) {
     e.preventDefault(); setBusy(true);

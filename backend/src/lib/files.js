@@ -1,7 +1,9 @@
-// Image handling shared by public uploads and private payment-proof files.
-const fs = require("fs");
-const path = require("path");
+// Images live in MongoDB (collection "files"), not on a server disk, so they survive redeploys and work on serverless hosts.
+//  - public images (product photos, logo, banner) are served at /uploads/<store>/<file> to everyone;
+//  - private images (payment screenshots) are served only to authorised staff through their own routes.
 const crypto = require("crypto");
+const { Binary } = require("mongodb");
+const { getDb } = require("../db");
 const { httpError } = require("./util");
 
 // Identify the real type from the first bytes. Never trust the file name or the browser. SVG is refused (script risk).
@@ -13,37 +15,44 @@ function sniff(buf) {
   return null;
 }
 
+const MIME = { png: "image/png", jpg: "image/jpeg", gif: "image/gif", webp: "image/webp" };
+const KEY = /^[a-z0-9-]{1,60}\/[a-f0-9]{24}\.(png|jpg|gif|webp)$/;
+const mb = (bytes) => (bytes / 1048576).toFixed(1).replace(/\.0$/, "");
+
 function parseImage(dataUrl, maxBytes) {
   const m = String(dataUrl || "").match(/^data:image\/[a-z+.-]+;base64,([A-Za-z0-9+/=]+)$/);
   if (!m) throw httpError(400, "Please choose an image file.");
   const buf = Buffer.from(m[1], "base64");
-  if (buf.length > maxBytes) throw httpError(413, `That image is too large. The maximum is ${Math.round(maxBytes / 1048576)} MB.`);
+  if (buf.length > maxBytes) throw httpError(413, `That image is too large. The maximum is ${mb(maxBytes)} MB.`);
   const ext = sniff(buf);
   if (!ext) throw httpError(400, "Only PNG, JPG, GIF or WEBP images are allowed.");
   return { buf, ext };
 }
 
-// Payment proofs (bank screenshots) are NOT public: they live outside the static folder and are served only to authorised staff.
-const PRIVATE_DIR = path.join(__dirname, "..", "..", "private-uploads");
-const KEY = /^[a-z0-9-]{1,60}\/[a-f0-9]{24}\.(png|jpg|gif|webp)$/;
-
-function savePrivateImage(scope, dataUrl, maxBytes = 2 * 1024 * 1024) {
-  const { buf, ext } = parseImage(dataUrl, maxBytes);
-  const dir = path.join(PRIVATE_DIR, scope);
-  fs.mkdirSync(dir, { recursive: true });
-  const name = crypto.randomBytes(12).toString("hex") + "." + ext;
-  fs.writeFileSync(path.join(dir, name), buf);
-  return `${scope}/${name}`;
+// Stores an already validated image and returns its key "<scope>/<random>.<ext>".
+async function saveBuffer({ scope, tenantId, visibility, buf, ext, by }) {
+  const key = `${scope}/${crypto.randomBytes(12).toString("hex")}.${ext}`;
+  await getDb().collection("files").insertOne({ _id: key, tenantId, visibility, ext, size: buf.length, data: new Binary(buf), createdAt: new Date(), by: by || null });
+  return key;
 }
 
-function sendPrivateImage(res, key) {
+// Payment proofs: private, tied to the store.
+async function savePrivateImage(scope, dataUrl, maxBytes = 2 * 1024 * 1024) {
+  const { buf, ext } = parseImage(dataUrl, maxBytes);
+  return saveBuffer({ scope, tenantId: scope, visibility: "private", buf, ext });
+}
+
+async function sendImage(res, key, visibility) {
   if (!KEY.test(key)) throw httpError(404, "File not found.");
-  const file = path.join(PRIVATE_DIR, key);
-  if (!file.startsWith(PRIVATE_DIR) || !fs.existsSync(file)) throw httpError(404, "File not found.");
+  const f = await getDb().collection("files").findOne({ _id: key, visibility });
+  if (!f) throw httpError(404, "File not found.");
+  res.setHeader("Content-Type", MIME[f.ext]);
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Content-Security-Policy", "default-src 'none'; sandbox");
-  res.setHeader("Cache-Control", "private, max-age=300");
-  res.sendFile(file);
+  res.setHeader("Cache-Control", visibility === "public" ? "public, max-age=604800, immutable" : "private, max-age=300");
+  res.status(200).end(Buffer.from(f.data.buffer));
 }
+const sendPublicImage = (res, key) => sendImage(res, key, "public");
+const sendPrivateImage = (res, key) => sendImage(res, key, "private");
 
-module.exports = { sniff, parseImage, savePrivateImage, sendPrivateImage, PRIVATE_DIR };
+module.exports = { sniff, parseImage, saveBuffer, savePrivateImage, sendPublicImage, sendPrivateImage };

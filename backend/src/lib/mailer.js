@@ -29,6 +29,11 @@ async function sendMail({ to, subject, text, html }) {
   const from = process.env.MAIL_FROM || "BuildVendo <no-reply@localhost>";
   const t = getTransport();
   if (!t) {
+    if (process.env.NODE_ENV === "production") {
+      // never put one-time links in production logs
+      console.warn(`[mail] SMTP is not configured: the email "${subject}" to ${to} was NOT sent. Set SMTP_HOST, SMTP_USER and SMTP_PASS.`);
+      return { sent: false };
+    }
     console.log(`[mail:dev] To: ${to}\n[mail:dev] Subject: ${subject}\n[mail:dev] ${text}\n`);
     try { await getDb().collection("outbox").insertOne({ to, subject, text, createdAt: new Date(), delivered: false }); } catch { /* dev helper only */ }
     return { sent: false };
@@ -65,7 +70,7 @@ Please submit it again from Plan & usage.`, html: layout("Payment not accepted",
 
 async function send(kind, to, data) {
   const t = templates[kind](data);
-  return sendMail({ to, ...t });
+  return require("./bg").bg(sendMail({ to, ...t })); // keeps running after the response on Vercel
 }
 
 module.exports = { send, sendMail, configured, appUrl };

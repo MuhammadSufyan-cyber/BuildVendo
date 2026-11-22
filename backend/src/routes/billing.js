@@ -109,7 +109,7 @@ router.post("/request", A.requirePerm("plan.billing.manage"), wrap(async (req, r
   if (price === 0) throw httpError(400, "The Free package needs no payment.");
   if (!b.reference.trim() && !b.image) throw httpError(400, "Please enter the transaction reference or attach a screenshot of your payment.");
   if (await db.collection("billingRequests").findOne({ tenantId: t.slug, status: "pending" })) throw httpError(409, "You already have a payment waiting for approval.");
-  const imageKey = b.image ? savePrivateImage(t.slug, b.image, 2 * 1024 * 1024) : null;
+  const imageKey = b.image ? await savePrivateImage(t.slug, b.image, 2 * 1024 * 1024) : null;
   await db.collection("billingRequests").insertOne({ tenantId: t.slug, tenantName: t.name, packageId: pkg.key, packageName: pkg.name, interval: b.interval, amount: price, currency: PLATFORM_CURRENCY, status: "pending",
     proof: { reference: b.reference.trim(), imageKey, submittedAt: new Date() }, requestedBy: req.actor.email, createdAt: new Date() });
   await audit(req, "billing.requested", pkg.key, { after: { interval: b.interval, amount: price } });

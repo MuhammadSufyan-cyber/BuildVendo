@@ -70,7 +70,7 @@ function PicturePicker({ label, hint, value, onChange, wide }) {
     if (!f) return;
     setBusy(true);
     try {
-      const data = await readImage(f, 3);
+      const data = await readImage(f, 2.5);
       const r = await api("/admin/uploads", { method: "POST", body: { data } });
       onChange(r.url);
     } catch (er) { notify(er.message, "err"); }
@@ -102,7 +102,7 @@ export function BrandingCard() {
   return (
     <div className="card" style={{ marginTop: 16 }}>
       <h2>Store pictures</h2>
-      <p className="muted">Make your store look like yours. Images are PNG, JPG, GIF or WEBP up to 3 MB.</p>
+      <p className="muted">Make your store look like yours. Images are PNG, JPG, GIF or WEBP up to 2.5 MB.</p>
       <div className="grid g2">
         <PicturePicker label="Logo" hint="Shown in the top bar. A wide logo on a transparent background works best." value={s.logoUrl} onChange={(v) => setS({ ...s, logoUrl: v })} />
         <PicturePicker label="Home page banner" hint="A wide photo behind your welcome text, about 1600 × 600." value={s.bannerUrl} wide onChange={(v) => setS({ ...s, bannerUrl: v })} />

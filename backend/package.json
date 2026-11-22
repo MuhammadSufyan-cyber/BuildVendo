@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",
+    "@vercel/functions": "^3.11.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -24,5 +25,8 @@
   },
   "devDependencies": {
     "mongodb-memory-server": "^11.3.0"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

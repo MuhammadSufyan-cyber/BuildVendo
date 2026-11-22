@@ -35,7 +35,7 @@ const DEMO_PRODUCTS = [
 
 async function resetDemo() {
   const db = getDb();
-  for (const c of ["tenants", "products", "orders", "discounts", "storeSpecs", "generationJobs", "usageCounters", "counters", "auditLogs", "notifications", "tickets", "reviews", "tenantOverrides", "uploads", "billingRequests", "posts", "returns"]) {
+  for (const c of ["tenants", "products", "orders", "discounts", "storeSpecs", "generationJobs", "usageCounters", "counters", "auditLogs", "notifications", "tickets", "reviews", "tenantOverrides", "uploads", "billingRequests", "posts", "returns", "files"]) {
     await db.collection(c).deleteMany(c === "tenants" ? { slug: "demo" } : { tenantId: "demo" });
   }
   await db.collection("customers").deleteMany({ tenantId: "demo", passwordHash: { $exists: false } });
@@ -43,7 +43,7 @@ async function resetDemo() {
   // remove data left behind by any store that no longer exists
   const live = (await db.collection("tenants").find({}).project({ slug: 1 }).toArray()).map((t) => t.slug);
   live.push("demo"); // the demo store is recreated right after this, so its accounts must survive (passwords stay stable)
-  for (const c of ["products", "orders", "customers", "discounts", "tenantUsers", "roles", "tenantOverrides", "usageCounters", "counters", "storeSpecs", "generationJobs", "auditLogs", "notifications", "tickets", "reviews", "uploads", "billingRequests", "webhooks", "posts", "returns"]) {
+  for (const c of ["products", "orders", "customers", "discounts", "tenantUsers", "roles", "tenantOverrides", "usageCounters", "counters", "storeSpecs", "generationJobs", "auditLogs", "notifications", "tickets", "reviews", "uploads", "billingRequests", "webhooks", "posts", "returns", "files"]) {
     await db.collection(c).deleteMany({ tenantId: { $nin: live, $ne: null } });
   }
   // uploaded files of the demo store and of throwaway test stores

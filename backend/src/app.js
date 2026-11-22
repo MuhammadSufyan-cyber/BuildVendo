@@ -13,7 +13,7 @@ app.use(cors({ origin: allowedOrigin, credentials: true }));
 // Stripe needs the raw request body to check its signature, so this is mounted before the JSON parser.
 app.use("/api/webhooks", require("./routes/webhooks"));
 // bodies are small, except image uploads (base64)
-app.use((req, res, next) => express.json({ limit: req.path === "/api/admin/uploads" ? "6mb" : "1mb" })(req, res, next));
+app.use((req, res, next) => express.json({ limit: req.path === "/api/admin/uploads" ? "4.4mb" : "1mb" })(req, res, next));
 app.use(cookieParser());
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -22,10 +22,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/api/health", async (_req, res) => {
+app.get("/api/health", async (req, res) => {
   let db = "down";
   try { await getDb().command({ ping: 1 }); db = "up"; } catch { /* reported below */ }
-  res.json({ status: db === "up" ? "ok" : "degraded", service: "ecommerce-platform-api", database: db });
+  res.json({ status: db === "up" ? "ok" : "degraded", service: "buildvendo-api", database: db, yourAddressAsSeenByApi: req.ip });
 });
 
 app.use("/api/public", require("./routes/public"));
@@ -44,7 +44,7 @@ app.use("/api/admin", require("./routes/admin"));
 app.use("/api/store", require("./routes/store"));
 
 // Uploaded images are public files: served as images only, never executed.
-app.use("/uploads", express.static(require("./routes/uploads").UPLOAD_DIR, { index: false, dotfiles: "deny", maxAge: "7d", setHeaders: (res) => { res.setHeader("X-Content-Type-Options", "nosniff"); res.setHeader("Content-Security-Policy", "default-src 'none'; sandbox"); } }));
+app.get("/uploads/:store/:file", (req, res, next) => require("./lib/files").sendPublicImage(res, `${req.params.store}/${req.params.file}`).catch(next));
 
 app.use("/api", (_req, res) => res.status(404).json({ error: "Not found." }));
 

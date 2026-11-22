@@ -68,7 +68,7 @@ router.get("/queue", A.requirePerm("orders.refund"), wrap(async (req, res) => {
 // Proof screenshots are private: only staff who can approve payments may open them, and only for their own store.
 router.get("/proof/:scope/:file", A.requirePerm("orders.refund"), wrap(async (req, res) => {
   if (req.params.scope !== req.tenant.slug) throw httpError(404, "File not found.");
-  sendPrivateImage(res, `${req.params.scope}/${req.params.file}`);
+  await sendPrivateImage(res, `${req.params.scope}/${req.params.file}`);
 }));
 
 async function loadPending(req) {

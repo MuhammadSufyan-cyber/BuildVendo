@@ -60,7 +60,7 @@ function ProductForm({ p, flags, onClose, onSaved }) {
 
   async function upload(file) {
     if (!file) return;
-    if (file.size > 3 * 1024 * 1024) return notify("That image is larger than 3 MB.", "err");
+    if (file.size > 2.5 * 1024 * 1024) return notify("That image is larger than 2.5 MB.", "err");
     const data = await new Promise((resolve) => { const fr = new FileReader(); fr.onload = () => resolve(fr.result); fr.readAsDataURL(file); });
     const r = await act(() => api("/admin/uploads", { method: "POST", body: { data } }));
     if (r && r !== true) setF((x) => ({ ...x, images: [...x.images, r.url] }));
@@ -88,7 +88,7 @@ function ProductForm({ p, flags, onClose, onSaved }) {
             <div key={u} style={{ position: "relative" }}><img src={u} alt="" style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 8, border: "1px solid var(--line)" }} />
               <button type="button" className="btn ghost sm" style={{ position: "absolute", top: -8, right: -8, padding: "0 6px" }} aria-label="Remove photo" onClick={() => setF({ ...f, images: f.images.filter((_, j) => j !== i) })}>✕</button></div>))}
             {f.images.length < 10 && <label className="btn ghost" style={{ cursor: "pointer" }}>+ Add photo<input type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden onChange={(e) => { upload(e.target.files[0]); e.target.value = ""; }} /></label>}
-          </div><small className="muted">PNG, JPG, GIF or WEBP, up to 3 MB each. The first photo is the main one.</small></div>
+          </div><small className="muted">PNG, JPG, GIF or WEBP, up to 2.5 MB each. The first photo is the main one.</small></div>
         <div className="grid g2">
           <Field label="Status"><select value={f.status} onChange={set("status")}><option value="active">Active (visible)</option><option value="draft">Draft (hidden)</option></select></Field>
           {!f.variants && isNew && <Field label="Stock"><input type="number" min="0" value={f.stock} onChange={set("stock")} /></Field>}
