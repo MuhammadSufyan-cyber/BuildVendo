@@ -1,0 +1,23 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Backend syntax check
+        run: |
+          for f in $(find backend/src backend/test -name "*.js"); do node --check "$f"; done
+      - name: Frontend production build
+        run: npm run build --workspace frontend
+        env:
+          BACKEND_URL: http://localhost:5000
+      # The API tests (npm run test:smoke --workspace backend) need a database, so run them locally or
+      # against a dedicated test cluster by adding MONGODB_URI as a repository secret.

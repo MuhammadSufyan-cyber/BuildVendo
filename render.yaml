@@ -1,0 +1,49 @@
+# Render Blueprint: deploys the BACKEND API from this repository (the website goes on Vercel).
+# Render dashboard -> New -> Blueprint -> pick this repo. Fill the "sync: false" values when asked.
+services:
+  - type: web
+    name: buildvendo-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free            # free instances sleep when idle and have no disk; upgrade before real customers
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_NAME
+        value: ecommerce_platform
+      - key: PLATFORM_CURRENCY
+        value: PKR
+      - key: TRUST_PROXY_HOPS
+        value: "2"
+      - key: REQUIRE_2FA_PLATFORM
+        value: "0"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PASSWORD_PEPPER
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: MONGODB_URI      # Atlas connection string
+        sync: false
+      - key: SEED_ADMIN_EMAIL     # your Super Admin sign-in (first start only)
+        sync: false
+      - key: SEED_ADMIN_PASSWORD  # at least 12 characters; you choose it, nobody else sees it
+        sync: false
+      - key: FRONTEND_URL     # your Vercel address, e.g. https://buildvendo.vercel.app
+        sync: false
+      - key: ROOT_DOMAIN      # same host without https://, e.g. buildvendo.vercel.app
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        value: BuildVendo <no-reply@yourdomain.com>
+      - key: ANTHROPIC_API_KEY
+        sync: false
