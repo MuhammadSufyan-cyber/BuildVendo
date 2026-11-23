@@ -30,7 +30,7 @@ export default function Support() {
           ) : <div className="card"><h2>Contact support</h2><p className="muted">🔒 Support tickets are available on higher packages. You can still email the platform team directly.</p></div>}
         </div>
       </div>
-      {open && <Modal title={open.subject} onClose={() => setOpen(null)} wide>{open.messages.map((m, i) => <div key={i} className="card" style={{ marginBottom: 8, background: m.from === "platform" ? "#eef4ff" : "#fff" }}><small className="muted">{m.from === "platform" ? "Platform team" : "You"} · {fmtDate(m.at)}</small><p style={{ margin: "4px 0 0", whiteSpace: "pre-wrap" }}>{m.body}</p></div>)}</Modal>}
+      {open && <Modal title={open.subject} onClose={() => setOpen(null)} wide>{open.messages.map((m, i) => <div key={i} className="card" style={{ marginBottom: 8, background: m.from === "platform" ? "var(--primary-soft)" : "var(--panel-2)" }}><small className="muted">{m.from === "platform" ? "Platform team" : "You"} · {fmtDate(m.at)}</small><p style={{ margin: "4px 0 0", whiteSpace: "pre-wrap" }}>{m.body}</p></div>)}</Modal>}
     </>
   );
 }

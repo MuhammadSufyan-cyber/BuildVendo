@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" role="img" aria-label="BuildVendo">
   <defs>
     <linearGradient id="bv" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffb347"/>
-      <stop offset="1" stop-color="#d9480f"/>
+      <stop offset="0" stop-color="#ffb199"/>
+      <stop offset="1" stop-color="#e8481f"/>
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="16" fill="url(#bv)"/>
   <path d="M26 26v-3a6 6 0 0 1 12 0v3" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
   <path d="M19.5 26h25l-2 22.4a4 4 0 0 1-4 3.6H25.5a4 4 0 0 1-4-3.6L19.5 26z" fill="#fff"/>
-  <path d="M30 32v16.8M30 32h6a4.2 4.2 0 0 1 0 8.4h-6M30 40.4h7a4.2 4.2 0 0 1 0 8.4h-7" fill="none" stroke="#d9480f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="80" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" fill="#3a2213">Build<tspan fill="#d9480f">Vendo</tspan></text>
+  <path d="M30 32v16.8M30 32h6a4.2 4.2 0 0 1 0 8.4h-6M30 40.4h7a4.2 4.2 0 0 1 0 8.4h-7" fill="none" stroke="#e8481f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="80" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="800" fill="#3a2213">Build<tspan fill="#e8481f">Vendo</tspan></text>
 </svg>

@@ -116,7 +116,7 @@ function Preview({ v, publish }) {
   const bg = dark ? "#1f140d" : "#fff8f1", fg = dark ? "#fbeee0" : "#2b1a10";
   return (
     <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-      <div className="row between" style={{ padding: "10px 16px", background: "#f0f3f9" }}><strong>Draft preview · v{v.version}</strong><div className="row"><StatusBadge status={v.status} />{v.status !== "published" && <button className="btn sm" onClick={() => publish(v.version)}>{v.status === "superseded" ? "Roll back to this" : "Publish this version"}</button>}</div></div>
+      <div className="row between" style={{ padding: "10px 16px", background: "var(--panel-2)" }}><strong>Draft preview · v{v.version}</strong><div className="row"><StatusBadge status={v.status} />{v.status !== "published" && <button className="btn sm" onClick={() => publish(v.version)}>{v.status === "superseded" ? "Roll back to this" : "Publish this version"}</button>}</div></div>
       <div style={{ background: bg, color: fg, fontFamily: t.font === "serif" ? "Georgia, serif" : t.font === "mono" ? "ui-monospace, Consolas, monospace" : "system-ui, sans-serif" }}>
         <div className="row between" style={{ padding: "12px 20px", background: t.primary, color: "#fff" }}><strong style={{ fontSize: "1.15rem" }}>{s.storeName}</strong><span className="small">{s.categories.slice(0, 4).join(" · ")}</span></div>
         <div style={{ padding: "36px 20px", textAlign: "center", background: `linear-gradient(135deg, ${t.primary}22, ${t.accent}33)` }}>

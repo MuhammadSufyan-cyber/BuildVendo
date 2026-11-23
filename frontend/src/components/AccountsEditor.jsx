@@ -10,7 +10,7 @@ export default function AccountsEditor({ methods, onChange }) {
   return (
     <div>
       {methods.map((m, i) => (
-        <div key={m.id || i} className="card" style={{ background: "#fafbfb", marginBottom: 10, padding: 14 }}>
+        <div key={m.id || i} className="card" style={{ background: "var(--panel-2)", marginBottom: 10, padding: 14 }}>
           <div className="grid g3">
             <Field label="Type"><select value={m.type} onChange={(e) => set(i, "type", e.target.value)}>{TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></Field>
             <Field label="Name shown to payers"><input value={m.label} onChange={(e) => set(i, "label", e.target.value)} placeholder="e.g. JazzCash or Bank Alfalah" required maxLength={60} /></Field>

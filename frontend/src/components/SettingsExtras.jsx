@@ -48,7 +48,7 @@ export function ShippingCard() {
       <h2>Shipping by country</h2>
       <p className="muted">Charge different delivery prices per country. A shopper&apos;s country is matched against the lists below. Anyone else pays your default shipping fee above.</p>
       {zones.map((z, i) => (
-        <div key={i} className="card" style={{ background: "#fafbfb", marginBottom: 10, padding: 14 }}>
+        <div key={i} className="card" style={{ background: "var(--panel-2)", marginBottom: 10, padding: 14 }}>
           <div className="grid g2">
             <Field label="Zone name"><input value={z.name} onChange={(e) => set(i, "name", e.target.value)} placeholder="e.g. Pakistan" required maxLength={60} /></Field>
             <Field label="Countries" hint="Separate with commas, spelled as shoppers type them."><input value={z.countries} onChange={(e) => set(i, "countries", e.target.value)} placeholder="Pakistan, PK" required /></Field>

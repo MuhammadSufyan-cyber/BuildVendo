@@ -30,7 +30,7 @@ function Tickets() {
       )}
       {open && (
         <Modal title={open.subject} onClose={() => setOpen(null)} wide>
-          {open.messages.map((m, i) => <div key={i} className="card" style={{ marginBottom: 8, background: m.from === "platform" ? "#eef4ff" : "#fff" }}><small className="muted">{m.by} · {fmtDate(m.at)}</small><p style={{ margin: "4px 0 0", whiteSpace: "pre-wrap" }}>{m.body}</p></div>)}
+          {open.messages.map((m, i) => <div key={i} className="card" style={{ marginBottom: 8, background: m.from === "platform" ? "var(--primary-soft)" : "var(--panel-2)" }}><small className="muted">{m.by} · {fmtDate(m.at)}</small><p style={{ margin: "4px 0 0", whiteSpace: "pre-wrap" }}>{m.body}</p></div>)}
           <Field label="Reply"><textarea value={reply} onChange={(e) => setReply(e.target.value)} /></Field>
           <div className="row end">
             <button className="btn ghost" onClick={() => send({ status: open.status === "closed" ? "open" : "closed" })}>{open.status === "closed" ? "Reopen" : "Close ticket"}</button>

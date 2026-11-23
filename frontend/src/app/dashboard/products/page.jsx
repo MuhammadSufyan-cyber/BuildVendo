@@ -94,7 +94,7 @@ function ProductForm({ p, flags, onClose, onSaved }) {
           {!f.variants && isNew && <Field label="Stock"><input type="number" min="0" value={f.stock} onChange={set("stock")} /></Field>}
         </div>
         {flags["CAT-02"] ? (
-          <div className="card" style={{ background: "#fafbfe" }}>
+          <div className="card" style={{ background: "var(--panel-2)" }}>
             <div className="row between"><h3>Variants</h3>{!f.variants ? <button type="button" className="btn ghost sm" onClick={() => setF({ ...f, variants: [{ title: "Small", price: f.price || "0", stock: 0 }, { title: "Large", price: f.price || "0", stock: 0 }] })}>Use variants</button> : <button type="button" className="btn ghost sm" onClick={() => setF({ ...f, variants: [...f.variants, { title: "", price: f.price || "0", stock: 0 }] })}>+ Add</button>}</div>
             {f.variants && f.variants.map((v, i) => (
               <div className="row" key={i} style={{ marginTop: 8 }}>

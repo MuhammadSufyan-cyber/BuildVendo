@@ -88,7 +88,7 @@ function PayModal({ pkg, interval, info, onClose, onSent }) {
       <h3>Step 1: send the money</h3>
       {!methods.length ? <p className="error">The platform has not added a payment account yet. Please contact the platform team.</p> : (
         <div className="grid g2" style={{ margin: "8px 0 12px" }}>{methods.map((m) => (
-          <div key={m.id} className="card" style={{ background: "#fafbfb", padding: 14 }}><strong>{m.label}</strong>
+          <div key={m.id} className="card" style={{ background: "var(--panel-2)", padding: 14 }}><strong>{m.label}</strong>
             {m.accountName && <div className="small">Name: {m.accountName}</div>}
             <div style={{ fontFamily: "ui-monospace, Consolas, monospace", margin: "4px 0" }}>{m.accountNumber}</div>
             {m.details && <div className="muted small">{m.details}</div>}

@@ -42,8 +42,8 @@ export default function Start() {
   async function resend() { try { const r = await api("/public/resend-verification", { method: "POST", body: { slug: done.slug, email: f.email } }); setSent(true); if (r.devVerifyUrl) setDone({ ...done, devVerifyUrl: r.devVerifyUrl }); } catch (e2) { setErr(e2.message); } }
 
   return (
-    <div style={{ background: "linear-gradient(180deg, #f6fbf9, #f1f2f4)", minHeight: "100vh" }}>
-      <header className="topnav"><div className="inner"><a className="brand" href="/" style={{ color: "inherit", textDecoration: "none" }}>BuildVendo</a><div style={{ flex: 1 }} /><a href="/login?scope=tenant">Already have a store? Sign in</a></div></header>
+    <div className="wizpage">
+      <header className="topnav"><div className="inner"><a className="brand" href="/" style={{ textDecoration: "none" }}>BuildVendo</a><div style={{ flex: 1 }} /><a href="/login?scope=tenant">Already have a store? Sign in</a></div></header>
       <div className="wiz">
         <div className="wiz-steps">{STEPS.map((s, i) => <span key={s} className={i === step ? "on" : i < step ? "done" : ""}>{i < step ? "✓ " : `${i + 1}. `}{s}</span>)}</div>
 

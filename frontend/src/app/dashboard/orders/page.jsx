@@ -56,7 +56,7 @@ function Detail({ o, manage, refundOn, role, onClose, onChanged }) {
       <h3>Timeline</h3>
       {o.timeline.map((t, i) => <div key={i} className="small"><StatusBadge status={t.status} /> {fmtDate(t.at)} {t.note && `· ${t.note}`} {t.by && `· ${t.by}`}</div>)}
       {canChange && allowed.length > 0 && (
-        <div className="card" style={{ marginTop: 14, background: "#fafbfe" }}>
+        <div className="card" style={{ marginTop: 14, background: "var(--panel-2)" }}>
           <Field label="Note (optional)"><input value={note} onChange={(e) => setNote(e.target.value)} /></Field>
           {allowed.includes("refunded") && <label className="chk"><input type="checkbox" checked={restock} onChange={(e) => setRestock(e.target.checked)} /> Return items to stock when refunding</label>}
           <div className="row">{allowed.map((s) => <button key={s} className={`btn ${s === "cancelled" || s === "refunded" ? "ghost" : ""}`} onClick={() => move(s)}>{LABEL[s]}</button>)}</div>
